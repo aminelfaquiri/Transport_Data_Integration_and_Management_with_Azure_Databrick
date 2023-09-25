@@ -16,7 +16,7 @@ dbutils.fs.ls("abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_tr
 
 # COMMAND ----------
 
-# MAGIC %md ### description :
+# MAGIC %md ### xxxxxxxx 
 
 # COMMAND ----------
 
@@ -114,7 +114,6 @@ df = df.withColumn("DelayCategory",
                    .when((col("Delay") > 0) & (col("Delay") <= 10), "Short Delay")
                    .when((col("Delay") > 10) & (col("Delay") <= 20), "Medium Delay")
                    .otherwise("Long Delay"))
-
 display(df)
 
 
@@ -147,4 +146,27 @@ result_df = df.groupBy("Route").agg(
 
 # Afficher le DataFrame résultant :
 display(result_df)
+
+
+# COMMAND ----------
+
+# MAGIC %md #### Save File :
+
+# COMMAND ----------
+
+display(df)
+
+# COMMAND ----------
+
+# Define the path where you want to save the CSV file in Azure Data Lake Storage
+output_file_location = "abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/processed/public-transport-data_Clean.csv"
+
+# Save the DataFrame as a CSV file to the specified location
+df.write.csv(output_file_location, header=True, mode="overwrite")
+
+# Display a message indicating the save operation is complete
+print("DataFrame saved as CSV to Azure Data Lake Storage")
+
+# COMMAND ----------
+
 
