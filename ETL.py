@@ -12,15 +12,22 @@ spark.conf.set(
 
 # COMMAND ----------
 
-dbutils.fs.ls("abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/raw/")
+file_list = dbutils.fs.ls("abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/raw")
+
+# Extract only the file names
+file_names = [file.name for file in file_list]
+
+# Print the list of file names
+for name in file_names:
+    print(name)
 
 # COMMAND ----------
 
-# MAGIC %md ### xxxxxxxx 
+file_name = file_names[1]
 
 # COMMAND ----------
 
-file_location = "abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/raw/public-transport-data.csv"
+file_location = f"abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/raw/{file_name}"
 
 df = spark.read.format("csv").option("inferSchema", "True").option("header",
 "True").option("delimeter",",").load(file_location)
@@ -30,10 +37,6 @@ display(df)
 # COMMAND ----------
 
 ## Cleanning Data :
-
-# COMMAND ----------
-
-
 
 # COMMAND ----------
 
@@ -158,15 +161,11 @@ display(df)
 
 # COMMAND ----------
 
-# Define the path where you want to save the CSV file in Azure Data Lake Storage
-output_file_location = "abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/processed/public-transport-data_Clean.csv"
+# Define the path where you want to save the CSV file in Azure Data Lake Storage :
+output_file_location = f"abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/processed/{file_name}"
 
-# Save the DataFrame as a CSV file to the specified location
+# Save the DataFrame as a CSV file to the specified location :
 df.write.csv(output_file_location, header=True, mode="overwrite")
 
-# Display a message indicating the save operation is complete
+# Display a message indicating the save operation is complete :
 print("DataFrame saved as CSV to Azure Data Lake Storage")
-
-# COMMAND ----------
-
-
