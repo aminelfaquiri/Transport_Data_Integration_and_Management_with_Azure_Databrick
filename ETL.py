@@ -1,42 +1,44 @@
 # Databricks notebook source
 from pyspark.sql.functions import year, month, dayofmonth,\
- dayofweek,col,date_format,regexp_extract,when,expr,\
- unix_timestamp, from_unixtime,avg,to_timestamp,col, sum, count
+    dayofweek,col,date_format,regexp_extract,when,expr,\
+    unix_timestamp, from_unixtime,avg,to_timestamp,col, sum, count
 
 # COMMAND ----------
 
 spark.conf.set(
-    f"fs.azure.account.key.elfaquirlake.dfs.core.windows.net", 
-    "8NIr8rOoeJMTSeKCs+rNqt7rstck9ktX7dmFwpne12GEefhb+AzeC7OVzmLeJbZrw4sm8aMgotEk+AStKTmlRg=="
+    f"fs.azure.account.key.spaickeraccount.dfs.core.windows.net", 
+    "SG2EXv3e3c5fP2IpEjXXawDV9FXJL/wHVBinPhIs4ALPF5cETfeFfsX4v7pWcPsYbSJjy2tgiVJA+AStsH3EEg=="
 )
 
 # COMMAND ----------
 
-file_list = dbutils.fs.ls("abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/raw")
+i = 0
 
-# Extract only the file names
+# COMMAND ----------
+
+account_name = "spaickeraccount"
+container_name = "transportpubliccon"
+
+file_list = dbutils.fs.ls(f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/raw/")
+
 file_names = [file.name for file in file_list]
 
-# Print the list of file names
-for name in file_names:
-    print(name)
+file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/raw/{file_names[i]}"
+
 
 # COMMAND ----------
 
-file_name = file_names[1]
+print(file_names)
 
 # COMMAND ----------
-
-file_location = f"abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/raw/{file_name}"
 
 df = spark.read.format("csv").option("inferSchema", "True").option("header",
 "True").option("delimeter",",").load(file_location)
-
 display(df)
 
 # COMMAND ----------
 
-## Cleanning Data :
+# MAGIC %md ## Cleanning Data :
 
 # COMMAND ----------
 
@@ -53,6 +55,7 @@ for column, count in null_count.asDict().items():
 
 # Fix data DepartureTime :
 df = df.withColumn("DepartureTime", date_format(col("DepartureTime"), "HH:mm"))
+df = df.withColumn("ArrivalTime", date_format(col("ArrivalTime"), "HH:mm"))
 display(df)
 
 # COMMAND ----------
@@ -70,7 +73,7 @@ time_pattern = r'^([01][0-9]|2[0-3]):[0-5][0-9]$'
 invalid_time_rows = df.filter(~(col("DepartureTime").rlike(time_pattern)) | ~(col("ArrivalTime").rlike(time_pattern)))
 
 # Show the DataFrame with rows containing invalid time values
-invalid_time_rows.show(100)
+display(invalid_time_rows)
 
 
 # COMMAND ----------
@@ -141,15 +144,16 @@ display(df)
 
 # COMMAND ----------
 
+from pyspark.sql import functions as F
+
 result_df = df.groupBy("Route").agg(
-    avg("Delay").alias("RetardMoyen"),
-    avg("Passengers").alias("NombrePassagersMoyen"),
-    count("*").alias("NombreTotalVoyages")
+    F.avg("Delay").alias("RetardMoyen"),
+    F.avg("Passengers").alias("NombrePassagersMoyen"),
+    F.count("*").alias("NombreTotalVoyages")
 )
 
 # Afficher le DataFrame résultant :
 display(result_df)
-
 
 # COMMAND ----------
 
@@ -157,15 +161,25 @@ display(result_df)
 
 # COMMAND ----------
 
-display(df)
-
-# COMMAND ----------
-
 # Define the path where you want to save the CSV file in Azure Data Lake Storage :
-output_file_location = f"abfss://transport-con@elfaquirlake.dfs.core.windows.net/public_transport_data/processed/{file_name}"
+output_file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/processed/Clean_{file_names[i][:-4]}.csv"
 
 # Save the DataFrame as a CSV file to the specified location :
 df.write.csv(output_file_location, header=True, mode="overwrite")
 
-# Display a message indicating the save operation is complete :
-print("DataFrame saved as CSV to Azure Data Lake Storage")
+
+# COMMAND ----------
+
+# import pandas as pd
+
+# df = df.toPandas()
+
+# # Define the path where you want to save the CSV file
+# output_file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/processed/Clean_{file_names[i][:-4]}.csv"
+
+# # Save the DataFrame as a CSV file to the specified location
+# df.to_csv(output_file_location, header=True, index=False)
+
+# COMMAND ----------
+
+
