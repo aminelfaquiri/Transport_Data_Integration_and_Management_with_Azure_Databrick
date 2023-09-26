@@ -12,12 +12,16 @@ spark.conf.set(
 
 # COMMAND ----------
 
-i = 0
-
-# COMMAND ----------
-
 account_name = "spaickeraccount"
 container_name = "transportpubliccon"
+
+x = dbutils.fs.ls(f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/processed/")
+
+x = [file.name for file in x]
+
+i = len(x)
+
+# COMMAND ----------
 
 file_list = dbutils.fs.ls(f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/raw/")
 
@@ -29,6 +33,10 @@ file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/p
 # COMMAND ----------
 
 print(file_names)
+
+# COMMAND ----------
+
+
 
 # COMMAND ----------
 
@@ -167,18 +175,6 @@ output_file_location = f"abfss://{container_name}@{account_name}.dfs.core.window
 # Save the DataFrame as a CSV file to the specified location :
 df.write.csv(output_file_location, header=True, mode="overwrite")
 
-
-# COMMAND ----------
-
-# import pandas as pd
-
-# df = df.toPandas()
-
-# # Define the path where you want to save the CSV file
-# output_file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/processed/Clean_{file_names[i][:-4]}.csv"
-
-# # Save the DataFrame as a CSV file to the specified location
-# df.to_csv(output_file_location, header=True, index=False)
 
 # COMMAND ----------
 
