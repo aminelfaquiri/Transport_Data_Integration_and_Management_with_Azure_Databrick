@@ -126,9 +126,8 @@ display(df)
 
 # COMMAND ----------
 
-average_passengers = df.select(avg("Passengers")).first()[0]
-
 # Identifier les heures de pointe et heures hors pointe en fonction du nombre de passagers :
+average_passengers = df.select(avg("Passengers")).first()[0]
 
 df = df.withColumn("HeureDePointe", when(col("Passengers") > average_passengers, "peak").otherwise("off-peak"))
 

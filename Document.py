@@ -195,6 +195,36 @@ display(df)
 
 # COMMAND ----------
 
+# MAGIC %md #### Catégorisation des retards :
+# MAGIC Je vais ajouter une colonne pour catégoriser les retards en groupes tels que 'Pas de Retard' (0 minutes), 'Retard Court' (1-10 minutes), 'Retard Moyen' (11-20 minutes) et 'Retard Long' (>20 minutes)
+
+# COMMAND ----------
+
+# Catégoriser les retards en fonction de la colonne "Delay"
+
+df = df.withColumn("DelayCategory", 
+                   when(col("Delay") <= 0, "No Delay")
+                   .when((col("Delay") > 0) & (col("Delay") <= 10), "Short Delay")
+                   .when((col("Delay") > 10) & (col("Delay") <= 20), "Medium Delay")
+                   .otherwise("Long Delay"))
+display(df)
+
+# COMMAND ----------
+
+# MAGIC %md #### 
+
+# COMMAND ----------
+
+# Identifier les heures de pointe et heures hors pointe en fonction du nombre de passagers :
+average_passengers = df.select(avg("Passengers")).first()[0]
+
+df = df.withColumn("HeureDePointe", when(col("Passengers") > average_passengers, "peak").otherwise("off-peak"))
+
+# Afficher le DataFrame avec les heures de pointe identifiées :
+display(df)
+
+# COMMAND ----------
+
 # DBTITLE 1,Lignage des Données : 
 
 
