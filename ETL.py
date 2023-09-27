@@ -64,10 +64,6 @@ display(df)
 
 # COMMAND ----------
 
-# MAGIC %md ### check value of time :
-
-# COMMAND ----------
-
 ## check value of time :
 
 # Define a regular expression pattern to match valid time values (HH:mm)
