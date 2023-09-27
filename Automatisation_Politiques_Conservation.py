@@ -24,10 +24,10 @@ processed_data = dbutils.fs.ls(f"abfss://{container_name}@{account_name}.dfs.cor
 # get all fishies in row :
 row_data = dbutils.fs.ls(f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/raw/")
 
-# show information for les fishies csv dans row :
+# show information for fishies csv dans row :
 row_data_info =[(info.name, info.modificationTime) for info in row_data]
 
-# show information for les fishies csv dans processed :
+# show information for fishies csv dans processed :
 processed_data_info =[(info.name,info.modificationTime) for info in processed_data]
 
 
