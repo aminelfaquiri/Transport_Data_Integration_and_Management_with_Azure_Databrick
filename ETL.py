@@ -158,7 +158,7 @@ display(result_df)
 # COMMAND ----------
 
 # Define the path where you want to save the CSV file in Azure Data Lake Storage :
-output_file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/processed/Clean_{file_names[i][:-4]}.csv"
+output_file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/processed/{file_names[i]}"
 
 # Save the DataFrame as a CSV file to the specified location :
 df.write.csv(output_file_location, header=True, mode="overwrite")

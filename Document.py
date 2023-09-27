@@ -211,7 +211,9 @@ display(df)
 
 # COMMAND ----------
 
-# MAGIC %md #### 
+# MAGIC %md #### Ajout de la colonne "HeureDePointe" :
+# MAGIC
+# MAGIC Je calcule la moyenne du nombre de passagers dans un DataFrame df, puis j'ajoute une nouvelle colonne appelée "HeureDePointe" en classant chaque ligne comme "peak" (heures de pointe) ou "off-peak" (heures creuses) en fonction du nombre de passagers par rapport à la moyenne. 
 
 # COMMAND ----------
 
@@ -225,8 +227,32 @@ display(df)
 
 # COMMAND ----------
 
-# DBTITLE 1,Lignage des Données : 
+afficher 
 
+# COMMAND ----------
+
+from pyspark.sql import functions as F
+
+result_df = df.groupBy("Route").agg(
+    F.avg("Delay").alias("RetardMoyen"),
+    F.avg("Passengers").alias("NombrePassagersMoyen"),
+    F.count("*").alias("NombreTotalVoyages")
+)
+
+# Afficher le DataFrame résultant :
+display(result_df)
+
+# COMMAND ----------
+
+save : 
+
+# COMMAND ----------
+
+# Define the path where you want to save the CSV file in Azure Data Lake Storage :
+output_file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/processed/{file_names[i]}"
+
+# Save the DataFrame as a CSV file to the specified location :
+df.write.csv(output_file_location, header=True, mode="overwrite")
 
 # COMMAND ----------
 
