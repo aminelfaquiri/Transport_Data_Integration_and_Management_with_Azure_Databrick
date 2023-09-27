@@ -5,38 +5,35 @@ from pyspark.sql.functions import year, month, dayofmonth,\
 
 # COMMAND ----------
 
+account_name = "elfaquiriacount"
+container_name = "mydata"
+Access_keys = "fKOvOOt/O/dwhHzRQADXl0AG5/4NjinJ9fB4bEWVOn7xf8CbhAhLr/AbQySNsLIzRFUGcPivt/Vs+AStpFyXqw=="
+
 spark.conf.set(
-    f"fs.azure.account.key.spaickeraccount.dfs.core.windows.net", 
-    "SG2EXv3e3c5fP2IpEjXXawDV9FXJL/wHVBinPhIs4ALPF5cETfeFfsX4v7pWcPsYbSJjy2tgiVJA+AStsH3EEg=="
+    f"fs.azure.account.key.{account_name}.dfs.core.windows.net", 
+    f"{Access_keys}"
 )
 
 # COMMAND ----------
 
-account_name = "spaickeraccount"
-container_name = "transportpubliccon"
+processed_data = dbutils.fs.ls(f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/processed/")
 
-x = dbutils.fs.ls(f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/processed/")
-
-x = [file.name for file in x]
-
-i = len(x)
+processed_data = [file.name for file in processed_data]
 
 # COMMAND ----------
 
+# csv file :
 file_list = dbutils.fs.ls(f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/raw/")
 
+# create list of csv :
 file_names = [file.name for file in file_list]
 
-file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/raw/{file_names[i]}"
-
+# select curent file :
+file_location = f"abfss://{container_name}@{account_name}.dfs.core.windows.net/public_transport_data/raw/{file_names[0]}"
 
 # COMMAND ----------
 
 print(file_names)
-
-# COMMAND ----------
-
-
 
 # COMMAND ----------
 
@@ -50,11 +47,10 @@ display(df)
 
 # COMMAND ----------
 
-
-# Calculate the total number of null values in the DataFrame
+# Calculate the total number of null values in the DataFrame :
 null_count = df.select(*(sum(col(c).isNull().cast("int")).alias(c) for c in df.columns)).collect()[0]
 
-# Print the null count for each column
+# Print the null count for each column :
 for column, count in null_count.asDict().items():
     print(f"Column '{column}': {count} null values")
 
@@ -112,7 +108,6 @@ display(df)
 # COMMAND ----------
 
 # caluculer la duration of time :
-
 df = df.withColumn("Duration", expr(
     "from_unixtime(unix_timestamp(ArrivalTime, 'HH:mm') - unix_timestamp(DepartureTime, 'HH:mm'), 'HH:mm')"
 ))
