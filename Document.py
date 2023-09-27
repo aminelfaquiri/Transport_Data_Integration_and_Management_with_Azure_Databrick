@@ -130,11 +130,68 @@ for column, count in null_count.asDict().items():
 # Fix data DepartureTime :
 df = df.withColumn("DepartureTime", date_format(col("DepartureTime"), "HH:mm"))
 df = df.withColumn("ArrivalTime", date_format(col("ArrivalTime"), "HH:mm"))
+
+# COMMAND ----------
+
+# MAGIC %md #### Vérification de temps :
+# MAGIC
+# MAGIC Je vérifie si les valeurs dans les colonnes de temps sont correctes, et j'ai constaté que certaines valeurs ne sont pas correctes dans le colonne "ArrivalTime".
+# MAGIC
+# MAGIC
+
+# COMMAND ----------
+
+## check value of time :
+
+# Define a regular expression pattern to match valid time values (HH:mm)
+time_pattern = r'^([01][0-9]|2[0-3]):[0-5][0-9]$'
+
+# Filter rows with invalid time values in DepartureTime or ArrivalTime columns :
+invalid_time_rows = df.filter(~(col("DepartureTime").rlike(time_pattern)) | ~(col("ArrivalTime").rlike(time_pattern)))
+
+# Show the DataFrame with rows containing invalid time values
+display(invalid_time_rows)
+
+# COMMAND ----------
+
+# MAGIC %md ##### Correction des valeurs dans la colonne ArrivalTime :
+# MAGIC
+# MAGIC Je vais remplacer les valeurs "23:59" par "00:00
+
+# COMMAND ----------
+
+# Fix invalid time values in ArrivalTime column :
+df = df.withColumn("ArrivalTime", when(~col("ArrivalTime").rlike(time_pattern), "00:00").otherwise(col("ArrivalTime")))
+
+# COMMAND ----------
+
+# MAGIC %md ##### Division de la colonne date :
+# MAGIC
+# MAGIC Je vais diviser la colonne date en quatre colonnes distinctes : day (jour), month (mois), year (année) et weekday (jour de la semaine), puis enfin supprimer la colonne d'origine
+
+# COMMAND ----------
+
+### Add column day,month,year,day_of_week :
+df = df.withColumn("year", year("Date"))
+df = df.withColumn("month", month("Date"))
+df = df.withColumn("day", dayofmonth("Date"))
+df = df.withColumn("day_of_week", dayofweek("Date"))
+df = df.drop("date")
 display(df)
 
 # COMMAND ----------
 
+# MAGIC %md ####Ajout de la colonne de durée :
+# MAGIC Je vais ajouter une colonne qui représente la durée de chaque voyage en soustrayant l'heure de départ de l'heure d'arrivée
+# MAGIC     
 
+# COMMAND ----------
+
+# caluculer la duration of time :
+df = df.withColumn("Duration", expr(
+    "from_unixtime(unix_timestamp(ArrivalTime, 'HH:mm') - unix_timestamp(DepartureTime, 'HH:mm'), 'HH:mm')"
+))
+display(df)
 
 # COMMAND ----------
 

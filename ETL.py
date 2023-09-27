@@ -78,7 +78,7 @@ display(invalid_time_rows)
 
 # COMMAND ----------
 
-# MAGIC %md ### Fixe vlue in ArrivalTime :
+# MAGIC %md ### Fixe value in ArrivalTime :
 
 # COMMAND ----------
 
@@ -93,7 +93,6 @@ display(df)
 # COMMAND ----------
 
 ### Add column day,month,year,day_of_week :
-
 df = df.withColumn("year", year("Date"))
 df = df.withColumn("month", month("Date"))
 df = df.withColumn("day", dayofmonth("Date"))
@@ -107,7 +106,6 @@ display(df)
 df = df.withColumn("Duration", expr(
     "from_unixtime(unix_timestamp(ArrivalTime, 'HH:mm') - unix_timestamp(DepartureTime, 'HH:mm'), 'HH:mm')"
 ))
-
 display(df)
 
 # COMMAND ----------
