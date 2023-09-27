@@ -163,7 +163,6 @@ output_file_location = f"abfss://{container_name}@{account_name}.dfs.core.window
 # Save the DataFrame as a CSV file to the specified location :
 df.write.csv(output_file_location, header=True, mode="overwrite")
 
-
 # COMMAND ----------
 
 

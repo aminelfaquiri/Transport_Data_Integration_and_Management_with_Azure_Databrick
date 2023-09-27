@@ -227,7 +227,7 @@ display(df)
 
 # COMMAND ----------
 
-afficher 
+Afficher :
 
 # COMMAND ----------
 
@@ -244,7 +244,8 @@ display(result_df)
 
 # COMMAND ----------
 
-save : 
+# MAGIC %md #### Sauvegarde du fichier CSV :
+# MAGIC Enfin, je sauvegarde le DataFrame transformé en tant que fichier CSV dans le stockage Azure Data Lake Storage.
 
 # COMMAND ----------
 
