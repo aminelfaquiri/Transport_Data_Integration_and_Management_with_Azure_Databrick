@@ -5,11 +5,10 @@
 # COMMAND ----------
 
 # DBTITLE 1,Description des Données :
-# MAGIC %md Les données utilisées dans le cadre de ce projet de gestion des données de transport sont gérées à l'aide d'un script Python.
+# MAGIC %md Les données utilisées dans ce projet de gestion des données de transport proviennent de l'entreprise XR_transport, et elles sont continuellement traitées pour améliorer les services de transport. Nous avons traité vos données dans le cloud en utilisant les services de Microsoft tels qu'Azure Databricks et Azure Data Factory
+# MAGIC ________________________________
+# MAGIC ### Les colonne de notre entreprise :
 # MAGIC
-# MAGIC ________________________________
-# MAGIC Lignage des Données: Indiquer la source des données, comme "Données provenant de [Nom de l'Agence de Transport] et traitées à l'aide d'Azure Databricks."???????????????????????????????????????
-# MAGIC ________________________________
 # MAGIC ######TransportType :
 # MAGIC Cette colonne indique le type de transport, par exemple, "Tram". Elle permet de catégoriser les véhicules de transport en fonction de leur mode.
 # MAGIC
@@ -266,12 +265,3 @@ df.write.csv(output_file_location, header=True, mode="overwrite")
 
 # DBTITLE 1,Patch et Automatisation :
 # MAGIC %md Je crée une fonction qui applique toutes les transformations déjà mentionnées dans ce document à chaque ensemble de fichiers chaque jour à minuit. Pour automatiser ce processus, j'utilise le service Azure Data Factory et configure un déclencheur pour définir l'heure d'exécution. De plus, j'ai automatisé les politiques de conservation
-
-# COMMAND ----------
-
-
-
-# COMMAND ----------
-
-# DBTITLE 1,Directives d'Utilisation :
-
