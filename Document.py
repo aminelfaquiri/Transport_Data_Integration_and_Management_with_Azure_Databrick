@@ -227,7 +227,9 @@ display(df)
 
 # COMMAND ----------
 
-Afficher :
+# MAGIC %md #### Analyse des Passagers:
+# MAGIC J'effectue une analyse des itinéraires en calculant trois métriques clés pour chaque itinéraire
+# MAGIC le retard moyen, le nombre moyen de passagers et le nombre total de voyages.
 
 # COMMAND ----------
 
