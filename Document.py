@@ -259,5 +259,19 @@ df.write.csv(output_file_location, header=True, mode="overwrite")
 
 # COMMAND ----------
 
+# DBTITLE 1,Politiques de Conservation :
+# MAGIC %md Je crée un script pour archiver les fichiers dans le dossier 'row'. J'archive chaque fichier qui a plus de 30 jours à partir de la date d'ajout. 
+
+# COMMAND ----------
+
+# DBTITLE 1,Patch et Automatisation :
+# MAGIC %md Je crée une fonction qui applique toutes les transformations déjà mentionnées dans ce document à chaque ensemble de fichiers chaque jour à minuit. Pour automatiser ce processus, j'utilise le service Azure Data Factory et configure un déclencheur pour définir l'heure d'exécution. De plus, j'ai automatisé les politiques de conservation
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
 # DBTITLE 1,Directives d'Utilisation :
 
